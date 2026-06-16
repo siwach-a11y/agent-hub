@@ -8,6 +8,7 @@
     "build": "next build",
     "build:html": "node scripts/build-html.mjs",
     "build:pages": "GITHUB_PAGES=1 node scripts/build-html.mjs",
+    "deploy:pages": "node scripts/deploy-gh-pages.mjs",
     "start": "next start",
     "lint": "next lint",
     "dev:sniper-backend": "npm run dev:backend --prefix ../ticket-sniper-bot"
