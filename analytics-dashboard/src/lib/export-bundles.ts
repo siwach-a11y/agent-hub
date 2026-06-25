@@ -1,5 +1,6 @@
 export type ExportBundleId =
   | "analytics-feature"
+  | "api-plugin"
   | "customer-analytics"
   | "marketing-intelligence"
   | "all";
@@ -30,6 +31,22 @@ export const EXPORT_BUNDLES: ExportBundle[] = [
       "app/api/marketing-analytics/route.ts",
     ],
     zipPath: "/exports/analytics-feature.zip",
+  },
+  {
+    id: "api-plugin",
+    name: "API Plugin",
+    description: "REST/CSV connectors, plugin engine, visualize API data on Home",
+    route: null,
+    npmCommand: "npm run exports:copy:plugin",
+    files: [
+      "lib/api-plugin/*",
+      "lib/data-stats.ts",
+      "app/api/plugin/catalog/route.ts",
+      "app/api/plugin/fetch/route.ts",
+      "components/api-plugin/*",
+      "components/providers/api-plugin-provider.tsx",
+    ],
+    zipPath: "/exports/api-plugin.zip",
   },
   {
     id: "customer-analytics",
@@ -66,7 +83,7 @@ export const EXPORT_BUNDLES: ExportBundle[] = [
     description: "All bundles merged into your-project/src",
     route: null,
     npmCommand: "npm run exports:copy:all",
-    files: ["customer-analytics + marketing-intelligence + analytics-feature"],
+    files: ["customer-analytics + marketing-intelligence + analytics-feature + api-plugin"],
     zipPath: "/exports/analytics-all.zip",
   },
 ];

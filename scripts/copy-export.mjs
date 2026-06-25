@@ -18,6 +18,7 @@ const BUNDLES = {
   "customer-analytics": "exports/customer-analytics",
   "marketing-intelligence": "exports/marketing-intelligence",
   "analytics-feature": "exports/analytics-feature",
+  "api-plugin": "exports/api-plugin",
 };
 
 const COPY_DIRS = ["types", "data", "app", "components", "lib"];
@@ -29,7 +30,8 @@ function usage() {
       "Bundles:\n" +
       "  customer-analytics      Subscriber lifecycle, cohorts (/customers)\n" +
       "  marketing-intelligence  Behavior, campaigns, plan (/marketing)\n" +
-      "  analytics-feature       lib/analytics.ts + API routes (functions only)\n\n" +
+      "  analytics-feature       lib/analytics.ts + API routes (functions only)\n" +
+      "  api-plugin              REST/CSV API plugin + visualization UI\n\n" +
       "Examples:\n" +
       "  node scripts/copy-export.mjs customer-analytics your-project/src\n" +
       "  EXPORT_TARGET=analytics-dashboard/src npm run exports:copy:customer"

@@ -13,6 +13,7 @@ const publicExports = path.join(root, "analytics-dashboard", "public", "exports"
 
 const BUNDLES = [
   "analytics-feature",
+  "api-plugin",
   "customer-analytics",
   "marketing-intelligence",
 ];
