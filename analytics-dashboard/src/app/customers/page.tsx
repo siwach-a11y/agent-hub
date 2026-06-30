@@ -5,7 +5,7 @@ import { AppLink } from "@/components/app-link";
 import { Header } from "@/components/layout/header";
 import { CustomerAnalyticsKpi } from "@/components/analytics/customer-analytics-kpi";
 import { RfmAnalysisPanel } from "@/components/analytics/rfm-analysis-panel";
-import { ClusterSegmentationPanel } from "@/components/workspace/cluster-segmentation-panel";
+import { TelcoSegmentationPanel } from "@/components/bnii/telco-segmentation-panel";
 import { useWorkspace } from "@/components/providers/workspace-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCustomerAnalytics } from "@/data/customer-analytics";
@@ -56,7 +56,7 @@ export default function CustomersPage() {
           </TabsContent>
 
           <TabsContent value="segmentation" className="mt-4">
-            <ClusterSegmentationPanel workspaceId={workspaceId} />
+            <TelcoSegmentationPanel workspaceId={workspaceId} />
           </TabsContent>
         </Tabs>
       </div>

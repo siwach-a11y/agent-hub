@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useWorkspace } from "@/components/providers/workspace-provider";
 import { getWorkspaceAnalytics } from "@/data/u9-analytics";
-import { ClusterSegmentationPanel } from "@/components/workspace/cluster-segmentation-panel";
+import { TelcoSegmentationPanel } from "@/components/bnii/telco-segmentation-panel";
 
 function SectionCard({
   title,
@@ -59,17 +59,18 @@ export function U9Dashboard() {
           </h1>
         </div>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#6b6258] dark:text-muted-foreground">
-          ML segmentation workspace — RFM clustering plus behavioral, value, lifecycle, occasion,
-          channel, engagement, cohort, network, and latent class models.
+          Telco segmentation — the nine BNII partners clustered on real aggregate metrics
+          (engagement &amp; scale, token economy, earn-channel mix) via K-Means and hierarchical
+          clustering.
         </p>
       </div>
 
       <div className="space-y-5 p-4 lg:p-8">
         <SectionCard
           title="Cluster intelligence"
-          subtitle="K-MEANS & HIERARCHICAL CLUSTERING · WORKSPACE SUBSCRIBERS"
+          subtitle="K-MEANS & HIERARCHICAL CLUSTERING · BNII TELCO PARTNERS"
         >
-          <ClusterSegmentationPanel workspaceId={workspaceId} />
+          <TelcoSegmentationPanel workspaceId={workspaceId} />
         </SectionCard>
 
         <details className="rounded-lg border border-[#e8e0d4] bg-white shadow-sm dark:border-border dark:bg-card">
