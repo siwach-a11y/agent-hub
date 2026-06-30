@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Loader2, Plug, Radio, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,6 @@ import {
   API_PLUGIN_DEFINITIONS,
   getFeedsByCategory,
   getVisibleFeedCategories,
-  isBniiFeedPlugin,
 } from "@/lib/api-plugin/registry";
 import {
   defaultFeedName,
@@ -30,7 +29,6 @@ import {
   BNII_METRICS_CATALOG_URL,
   BNII_METRICS_DICTIONARY_URL,
 } from "@/lib/api-plugin/bnii-api";
-import { isBniiDataFeedWorkspace } from "@/lib/bnii/raw-data-countries";
 import type { ApiPluginId } from "@/lib/api-plugin";
 
 type ApiPluginPanelProps = {
@@ -52,28 +50,11 @@ export function ApiPluginPanel({ onConnected, compact }: ApiPluginPanelProps) {
   const definition = API_PLUGIN_DEFINITIONS.find((p) => p.id === pluginId);
   const builtinFeeds = useMemo(() => getFeedsByCategory("builtin"), []);
   const bniiFeeds = useMemo(() => getFeedsByCategory("bnii"), []);
-  const telecomFeeds = useMemo(() => getFeedsByCategory("telecom"), []);
   const visibleFeedCategories = useMemo(
     () => getVisibleFeedCategories(workspaceId),
     [workspaceId]
   );
-  const bniiFeedsAvailable = isBniiDataFeedWorkspace(workspaceId);
-  const bniiConnectBlocked = isBniiFeedPlugin(pluginId) && !bniiFeedsAvailable;
-
-  useEffect(() => {
-    if (isBniiFeedPlugin(pluginId) && !bniiFeedsAvailable) {
-      setPluginId("workspace");
-    }
-  }, [pluginId, bniiFeedsAvailable]);
-
   async function connectFeed(id: ApiPluginId, feedEndpoint?: string) {
-    if (isBniiFeedPlugin(id) && !isBniiDataFeedWorkspace(workspaceId)) {
-      setError(
-        "Thailand (U3) is not on the BNII API. Switch to a BNII workspace to connect catalog or dictionary feeds."
-      );
-      return;
-    }
-
     setPluginId(id);
     setError(null);
     setLoading(true);
@@ -142,50 +123,13 @@ export function ApiPluginPanel({ onConnected, compact }: ApiPluginPanelProps) {
           <p className="mt-3 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             BNII Analytics API
           </p>
-          {!bniiFeedsAvailable ? (
-            <p className="mt-2 text-[10px] text-muted-foreground">
-              Thailand (U3) is not on the BNII API. Switch to a BNII workspace to connect catalog
-              or dictionary feeds.
-            </p>
-          ) : (
-            <>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {bniiFeeds.map((feed) => (
-                  <Button
-                    key={feed.id}
-                    type="button"
-                    size="sm"
-                    variant="secondary"
-                    className="h-7 text-[10px]"
-                    disabled={loading}
-                    onClick={() => connectFeed(feed.id)}
-                  >
-                    {feed.name}
-                  </Button>
-                ))}
-              </div>
-              <p className="mt-1 text-[10px] text-muted-foreground">
-                Live from{" "}
-                <span className="font-mono">
-                  {BNII_METRICS_CATALOG_URL.replace(/^https:\/\//, "")}
-                </span>
-                {" · "}
-                <span className="font-mono">
-                  {BNII_METRICS_DICTIONARY_URL.replace(/^https:\/\//, "")}
-                </span>
-              </p>
-            </>
-          )}
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-            Telecommunications
-          </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {telecomFeeds.map((feed) => (
+            {bniiFeeds.map((feed) => (
               <Button
                 key={feed.id}
                 type="button"
                 size="sm"
-                variant="outline"
+                variant="secondary"
                 className="h-7 text-[10px]"
                 disabled={loading}
                 onClick={() => connectFeed(feed.id)}
@@ -195,7 +139,14 @@ export function ApiPluginPanel({ onConnected, compact }: ApiPluginPanelProps) {
             ))}
           </div>
           <p className="mt-1 text-[10px] text-muted-foreground">
-            Thailand U3 telemetry — separate from BNII Analytics API feeds.
+            Live from{" "}
+            <span className="font-mono">
+              {BNII_METRICS_CATALOG_URL.replace(/^https:\/\//, "")}
+            </span>
+            {" · "}
+            <span className="font-mono">
+              {BNII_METRICS_DICTIONARY_URL.replace(/^https:\/\//, "")}
+            </span>
           </p>
         </div>
       )}
@@ -306,7 +257,7 @@ export function ApiPluginPanel({ onConnected, compact }: ApiPluginPanelProps) {
           type="button"
           className="w-full gap-2"
           size={compact ? "sm" : "default"}
-          disabled={loading || bniiConnectBlocked}
+          disabled={loading}
           onClick={handleConnect}
         >
           {loading ? (
@@ -316,12 +267,6 @@ export function ApiPluginPanel({ onConnected, compact }: ApiPluginPanelProps) {
           )}
           Connect feed
         </Button>
-
-        {bniiConnectBlocked && (
-          <p className="text-xs text-muted-foreground">
-            BNII Analytics API feeds are not available on Thailand (U3).
-          </p>
-        )}
 
         {error && <p className="text-xs text-destructive">{error}</p>}
       </div>

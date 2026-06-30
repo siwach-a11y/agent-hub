@@ -64,8 +64,6 @@ export function pluginBadgeLabel(pluginId: ApiPluginId): string {
       return "Feed · BNII Catalog";
     case "bnii-metrics-dictionary":
       return "Feed · BNII Dictionary";
-    case "telecom-workspace":
-      return "Feed · Telecom";
     case "internal-api":
       return "Feed · Internal API";
     case "rest-json":

@@ -264,7 +264,7 @@ export async function fetchCsvUrlPlugin(
 function assertBniiFeedWorkspace(workspaceId: WorkspaceId, feedName: string): void {
   if (!isBniiDataFeedWorkspace(workspaceId)) {
     throw new Error(
-      `${feedName} is not available for Thailand (U3). Switch to a BNII workspace (U9, U5, U7, or U8).`
+      `${feedName} is only available on BNII workspaces (U9, U5, U7, or U8).`
     );
   }
 }
@@ -287,8 +287,6 @@ export async function runApiPlugin(request: ApiPluginFetchRequest): Promise<Pars
     case "bnii-metrics-dictionary":
       assertBniiFeedWorkspace(workspaceId, "BNII Metrics Dictionary");
       return fetchBniiMetricsDictionaryPlugin();
-    case "telecom-workspace":
-      return fetchWorkspacePlugin("u3");
     case "internal-api":
       if (!request.endpoint?.trim()) {
         throw new Error("Internal API feed requires a route path (e.g. /api/customer-analytics).");

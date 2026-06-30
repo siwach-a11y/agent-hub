@@ -99,7 +99,7 @@ export function RawDataPanel() {
     <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
         {BNII_RAW_DATA_WORKSPACE_IDS.length} countries on the BNII Analytics API —{" "}
-        {RAW_DATA_COUNTRY_NAMES.join(", ")}. Thailand is not included.
+        {RAW_DATA_COUNTRY_NAMES.join(", ")}.
       </p>
       <Tabs value={activeTabId} onValueChange={handleTabChange}>
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/40 p-1">

@@ -5,7 +5,6 @@ import type { ApiPluginDefinition, ApiPluginId, DataFeedCategory } from "./types
 export const DATA_FEED_CATEGORIES: { id: DataFeedCategory; label: string }[] = [
   { id: "builtin", label: "Built-in analytics feeds" },
   { id: "bnii", label: "BNII Analytics API" },
-  { id: "telecom", label: "Telecommunications" },
   { id: "external", label: "External data feeds" },
 ];
 
@@ -63,16 +62,6 @@ export const API_PLUGIN_DEFINITIONS: ApiPluginDefinition[] = [
     docsHint: "https://bnii-analytics-api-epgxydm2fa-as.a.run.app/v1/metrics/dictionary",
   },
   {
-    id: "telecom-workspace",
-    name: "Telecom Workspace KPIs",
-    description:
-      "Thailand (U3) telecommunications telemetry — not on the BNII Analytics API.",
-    category: "telecom",
-    requiresEndpoint: false,
-    refreshHint: "Telecom · Thailand U3",
-    docsHint: "Use Raw Data → Telecommunications for field-level checks.",
-  },
-  {
     id: "internal-api",
     name: "Internal API Route",
     description: "Pull JSON from this app's analytics API routes (e.g. /api/customer-analytics).",
@@ -114,10 +103,6 @@ export function getFeedsByCategory(category: DataFeedCategory): ApiPluginDefinit
 
 export function isBniiFeedPlugin(id: ApiPluginId): boolean {
   return getPluginDefinition(id)?.category === "bnii";
-}
-
-export function isTelecomFeedPlugin(id: ApiPluginId): boolean {
-  return getPluginDefinition(id)?.category === "telecom";
 }
 
 export function getVisibleFeedCategories(

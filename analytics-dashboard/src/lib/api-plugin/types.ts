@@ -9,12 +9,11 @@ export type ApiPluginId =
   | "customer-intelligence"
   | "bnii-metrics-catalog"
   | "bnii-metrics-dictionary"
-  | "telecom-workspace"
   | "internal-api"
   | "rest-json"
   | "csv-url";
 
-export type DataFeedCategory = "builtin" | "bnii" | "telecom" | "external";
+export type DataFeedCategory = "builtin" | "bnii" | "external";
 
 export type ApiPluginDefinition = {
   id: ApiPluginId;

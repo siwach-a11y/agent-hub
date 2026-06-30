@@ -1,8 +1,8 @@
 import { U9 } from "./u9-constants";
 
-export type WorkspaceId = "u9" | "u5" | "u7" | "u3" | "u8";
+export type WorkspaceId = "u9" | "u5" | "u7" | "u8";
 
-export const WORKSPACE_IDS: WorkspaceId[] = ["u9", "u5", "u7", "u3", "u8"];
+export const WORKSPACE_IDS: WorkspaceId[] = ["u9", "u5", "u7", "u8"];
 
 export type WorkspaceMetrics = {
   workspace: {
@@ -144,52 +144,6 @@ export const WORKSPACES: Record<WorkspaceId, WorkspaceMetrics> = {
       "Sri Lanka production workspace · BNII Analytics API · 28 of 28 fields live.",
     rawDataBrand: "Lanka",
     rawDataLiveFields: 28,
-  },
-  u3: {
-    workspace: {
-      id: "u3",
-      code: "U3",
-      name: "U3",
-      country: "Thailand",
-      flag: "🇹🇭",
-      tier: "Pilot",
-      status: "Active",
-      subscribers: 4_200_000,
-      mrr: 0,
-      contractEnd: "Ongoing",
-    },
-    dau: 22_100,
-    mau: 680_000,
-    bnryEarned30d: 4_920_000,
-    bnryRedeemed30d: 698_000,
-    earnBurnRatio: 7.05,
-    netBnryPerUser: 9.8,
-    emartTx30d: 14,
-    stwWinners30d: 142_000,
-    earn: {
-      video: 24_000,
-      quest: 382_000,
-      stw: 3_980_000,
-      screenTime: 468_000,
-      topup: 66_000,
-    },
-    burn: {
-      accessPass: { volume: 662_000, percent: 95 },
-      emartSpend: { volume: 36_000, percent: 5 },
-    },
-    engagement: {
-      homepageViewsPerUser: 1.7,
-      avgSessionSeconds: 40,
-      gameClicksPerUser: 0.05,
-      stwRewardsPerClick: 71.8,
-      repeatSessionMultiplier: 0.07,
-      dauMauStickiness: 3.2,
-    },
-    apiNote:
-      "Thailand pilot workspace · Telecommunications telemetry · 26 of 28 fields live (not on BNII API).",
-    rawDataBrand: "Siam",
-    rawDataLiveFields: 26,
-    rawDataUnavailableFields: ["dau_ga", "mau_d30"],
   },
   u8: {
     workspace: {
