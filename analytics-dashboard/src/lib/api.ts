@@ -17,8 +17,8 @@ import type { WorkspaceId } from "@/data/workspaces";
 import { getCustomerIntelligence } from "@/data/customer-intelligence";
 import type { CustomerIntelligenceSummary } from "@/types/customer-intelligence";
 import type { U9Analytics } from "@/data/u9-analytics";
-import { fetchRawDataSummary, fetchAllRawDataSummaries } from "@/lib/bnii/raw-data-service";
 import { isBniiRawDataWorkspace } from "@/lib/bnii/raw-data-countries";
+import bniiRawDataSnapshot from "@/data/bnii-raw-data-snapshot.json";
 import type { RawDataMultiSummary, RawDataSummary } from "@/types/bnii-raw-data";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -94,14 +94,19 @@ export const bniiApi = {
       throw new Error("Thailand is not available on the BNII Raw Data API.");
     }
     if (process.env.NEXT_PUBLIC_STATIC_DEMO === "true") {
-      return fetchRawDataSummary(workspaceId);
+      const snapshot = bniiRawDataSnapshot as RawDataMultiSummary;
+      const country = snapshot.countries.find((entry) => entry.workspaceId === workspaceId);
+      if (!country) {
+        throw new Error(`No raw data snapshot for workspace ${workspaceId}.`);
+      }
+      return country;
     }
     return fetchJson<RawDataSummary>(`/api/bnii/raw-data?workspace=${workspaceId}`);
   },
 
   rawDataAll: async (): Promise<RawDataMultiSummary> => {
     if (process.env.NEXT_PUBLIC_STATIC_DEMO === "true") {
-      return fetchAllRawDataSummaries();
+      return bniiRawDataSnapshot as RawDataMultiSummary;
     }
     return fetchJson<RawDataMultiSummary>("/api/bnii/raw-data?all=true");
   },

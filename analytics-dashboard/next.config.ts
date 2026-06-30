@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_STATIC_DEMO: isStaticExport ? "true" : "",
   },
   ...(basePath ? { basePath } : {}),
   ...(isStaticExport

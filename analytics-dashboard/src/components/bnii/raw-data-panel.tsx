@@ -12,12 +12,20 @@ import {
   defaultBniiRawDataWorkspace,
   isBniiRawDataWorkspace,
 } from "@/lib/bnii/raw-data-countries";
-import type { RawDataSummary } from "@/types/bnii-raw-data";
+import type { RawDataMultiSummary, RawDataSummary } from "@/types/bnii-raw-data";
+import bniiRawDataSnapshot from "@/data/bnii-raw-data-snapshot.json";
+
+const STATIC_RAW_DATA =
+  process.env.NEXT_PUBLIC_STATIC_DEMO === "true"
+    ? (bniiRawDataSnapshot as RawDataMultiSummary)
+    : null;
 
 export function RawDataPanel() {
   const { workspaceId, setWorkspaceId, options } = useWorkspace();
-  const [summaries, setSummaries] = useState<RawDataSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [summaries, setSummaries] = useState<RawDataSummary[]>(
+    () => STATIC_RAW_DATA?.countries ?? []
+  );
+  const [loading, setLoading] = useState(!STATIC_RAW_DATA);
   const [error, setError] = useState<string | null>(null);
 
   const countryOptions = useMemo(
@@ -35,6 +43,13 @@ export function RawDataPanel() {
   );
 
   const load = useCallback(async () => {
+    if (STATIC_RAW_DATA) {
+      setSummaries(STATIC_RAW_DATA.countries);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {

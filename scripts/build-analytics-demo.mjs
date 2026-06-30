@@ -48,6 +48,16 @@ try {
     rmSync(outDir, { recursive: true, force: true });
   }
 
+  console.log("Generating BNII raw data snapshot...");
+  execSync("node scripts/generate-bnii-raw-snapshot.mjs", {
+    cwd: root,
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      NEXT_PUBLIC_STATIC_DEMO: "true",
+    },
+  });
+
   execSync("npm run build", {
     cwd: dashboardRoot,
     stdio: "inherit",
@@ -66,7 +76,7 @@ try {
   }
 
   // Flat RSC payloads for client router prefetch (trailingSlash export)
-  for (const route of ["customers", "marketing", "workspace/u9"]) {
+  for (const route of ["customers", "marketing", "raw-data", "workspace/u9"]) {
     const nested = path.join(outDir, route, "index.txt");
     const flat = path.join(outDir, `${route}.txt`);
     if (existsSync(nested)) cpSync(nested, flat);
