@@ -85,8 +85,9 @@ export default function Home() {
             <span className="gradient-text">work for you</span>
           </h2>
           <p className="mt-3 text-slate-500 text-base max-w-xl leading-relaxed">
-            Browse curated AI agents for travel, finance, concerts, and more.
-            Snipe the best deals with a 2.5% platform fee on every hunt.
+            Browse curated AI agents for vouchers, daily deals, cashback, promo
+            codes, loyalty rewards, and flash sales — find the best savings in
+            seconds.
           </p>
         </section>
 

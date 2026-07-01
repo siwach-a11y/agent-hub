@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const isStaticExport = process.env.BUILD_HTML === "1";
 const isGithubPages = process.env.GITHUB_PAGES === "1";
-const basePath = isGithubPages ? "/analytics" : "";
+// Base path for GitHub Pages project sites. Override with PAGES_BASE_PATH
+// (e.g. "/voucher-agent"); defaults to "/analytics" for the original repo.
+const basePath = isGithubPages
+  ? process.env.PAGES_BASE_PATH || "/analytics"
+  : "";
 
 const nextConfig = {
   ...(basePath ? { basePath } : {}),

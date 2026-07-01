@@ -1,12 +1,12 @@
-# AgentHub
+# AgentHub — Voucher & Rewards
 
-AI agent marketplace with snipe-mode demos for travel, entertainment, and finance.
+AI agent marketplace focused on vouchers, deals, and rewards.
 
 ## Live demo
 
-**GitHub Pages:** [https://siwach-a11y.github.io/analytics/](https://siwach-a11y.github.io/analytics/)
+**GitHub Pages:** [https://siwach-a11y.github.io/voucher-agent/](https://siwach-a11y.github.io/voucher-agent/)
 
-Start at `summary.html` for the platform overview, or `index.html` for the marketplace.
+Open `index.html` for the marketplace.
 
 ## Local development
 
@@ -33,22 +33,22 @@ Outputs a shareable folder at `agenthub-demo/` and `agenthub-demo.zip`.
 
 ## GitHub Pages deploy
 
-Pushes to `main` run `.github/workflows/deploy-pages.yml`, which builds with `npm run build:pages` and publishes the `out/` directory.
-
-Manual build for Pages (uses `/analytics` base path):
+Manual build for Pages. Set `PAGES_BASE_PATH` to match the repo name:
 
 ```bash
-npm run build:pages
+PAGES_BASE_PATH=/voucher-agent npm run build:pages
 ```
+
+This publishes the `out/` directory (deploy it to the `gh-pages` branch).
 
 ## Agents
 
-- Concert Ticket Finder
-- Flight & Hotel Finder (includes Snipe Mode)
-- Currency Exchange
-- Car Rental Finder
-- Event Deal & Flash Sale
-- Event Deal Hunter
-- Personal Loan Finder
+- Voucher Discovery Agent — find vouchers
+- Daily Deals Agent — daily deals
+- Cashback Agent — cashback offers
+- Promo Code Agent — promo codes
+- Loyalty Rewards Agent — loyalty rewards
+- Buy 1 Get 1 Agent — buy-one-get-one offers
+- Flash Sale Agent — flash sales
 
-Snipe hunts run in browser demo mode on the static build (no backend required). A 2.5% platform fee applies on every snipe in the UI.
+The AI assistant on each agent page needs the live server (`npm run dev`) with `ANTHROPIC_API_KEY` set; the static build runs the browse/filter UI without a backend.
