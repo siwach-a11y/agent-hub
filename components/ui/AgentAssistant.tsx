@@ -53,6 +53,19 @@ function ExternalLinkIcon() {
   );
 }
 
+/** Human-friendly website label, e.g. "cnbc.com/select/best-credit-cards". */
+function prettyUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    const path = u.pathname.replace(/\/$/, "");
+    const label = `${host}${path}`;
+    return label.length > 60 ? `${label.slice(0, 57)}…` : label;
+  } catch {
+    return url;
+  }
+}
+
 export default function AgentAssistant({
   open,
   onClose,
@@ -107,9 +120,11 @@ export default function AgentAssistant({
     ]);
     setIsLoading(true);
 
+    const searchDirective =
+      "Use web search to find current, real offers and information. Answer concisely and cite the specific source websites you used with their links. If the question is vague, make reasonable assumptions and still search — do not just ask clarifying questions.";
     const prompt = systemContext
-      ? `${systemContext}\n\nUser question: ${text}`
-      : text;
+      ? `${systemContext}\n\n${searchDirective}\n\nUser question: ${text}`
+      : `${searchDirective}\n\nUser question: ${text}`;
 
     const update = (patch: Partial<Message>) =>
       setMessages((prev) => {
@@ -227,17 +242,24 @@ export default function AgentAssistant({
             ) : (
               <div key={i} className="space-y-2.5">
                 {msg.sources.length > 0 && (
-                  <ul className="space-y-2">
+                  <ul className="space-y-2.5">
                     {msg.sources.map((s) => (
                       <li key={s.url}>
                         <a
                           href={s.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-start gap-2 text-[15px] leading-snug text-amber-300/90 hover:text-amber-200 hover:underline"
+                          className="group flex items-start gap-2 leading-snug"
                         >
                           <ExternalLinkIcon />
-                          <span>{s.title}</span>
+                          <span className="min-w-0">
+                            <span className="block text-[15px] text-amber-300/90 group-hover:text-amber-200 group-hover:underline">
+                              {s.title}
+                            </span>
+                            <span className="block text-xs text-neutral-500 group-hover:text-neutral-400 truncate">
+                              {prettyUrl(s.url)}
+                            </span>
+                          </span>
                         </a>
                       </li>
                     ))}
