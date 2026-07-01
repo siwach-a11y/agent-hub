@@ -38,7 +38,7 @@ User query: ${input.trim()}
 Recommend 1-3 agents that best match their needs. Explain why each is a good fit. Be concise and helpful.`;
 
     try {
-      await streamChatResponse(prompt, false, setResponse);
+      await streamChatResponse(prompt, false, ({ text }) => setResponse(text));
     } catch (err) {
       if (err instanceof Error && err.name === MISSING_KEY_ERROR) {
         setNeedsKey(true);

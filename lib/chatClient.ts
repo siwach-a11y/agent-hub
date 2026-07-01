@@ -3,37 +3,43 @@ import { getStoredKey, MISSING_KEY_ERROR } from "./anthropicKey";
 // Model per the Anthropic API reference.
 const MODEL = "claude-opus-4-8";
 
-type OnText = (cumulative: string) => void;
+export interface ChatSource {
+  title: string;
+  url: string;
+}
+
+export interface ChatUpdate {
+  text: string;
+  sources: ChatSource[];
+}
+
+type OnUpdate = (update: ChatUpdate) => void;
 
 /**
- * Streams a chat completion. Tries the server `/api/chat` route first (works
- * when deployed to a backend, e.g. Cloudflare/Vercel). If no backend is
- * available (static GitHub Pages demo), falls back to calling Anthropic
- * directly from the browser using the visitor's own stored key.
+ * Streams a chat completion with web search. Tries the server `/api/chat`
+ * route first (works when deployed to a backend); if none exists (static
+ * GitHub Pages demo), falls back to calling Anthropic directly from the
+ * browser with the visitor's own stored key.
  *
- * Returns the final text. Throws an error named MISSING_KEY_ERROR when no
- * backend and no stored key are available.
+ * `onUpdate` receives the cumulative text and any web-search sources so far.
+ * Throws an error named MISSING_KEY_ERROR when no backend and no key exist.
  */
 export async function streamChatResponse(
   prompt: string,
   useWebSearch: boolean,
-  onText: OnText
-): Promise<string> {
-  const server = await tryServer(prompt, useWebSearch, onText);
-  if (server.handled) return server.text;
+  onUpdate: OnUpdate
+): Promise<ChatUpdate> {
+  const server = await tryServer(prompt, useWebSearch, onUpdate);
+  if (server.handled) return server.update;
 
-  return streamBrowserDirect(prompt, onText);
+  return streamBrowserDirect(prompt, useWebSearch, onUpdate);
 }
 
-/**
- * Attempts the server route. Returns handled=false (without emitting any text)
- * when the route is unavailable, so the caller can fall back cleanly.
- */
 async function tryServer(
   prompt: string,
   useWebSearch: boolean,
-  onText: OnText
-): Promise<{ handled: boolean; text: string }> {
+  onUpdate: OnUpdate
+): Promise<{ handled: boolean; update: ChatUpdate }> {
   let res: Response;
   try {
     res = await fetch("/api/chat", {
@@ -42,21 +48,30 @@ async function tryServer(
       body: JSON.stringify({ prompt, useWebSearch }),
     });
   } catch {
-    return { handled: false, text: "" };
+    return { handled: false, update: { text: "", sources: [] } };
+  }
+  if (!res.ok || !res.body) {
+    return { handled: false, update: { text: "", sources: [] } };
   }
 
-  // No backend (static host serves 404/405 for the API path) → fall back.
-  if (!res.ok || !res.body) return { handled: false, text: "" };
-
-  const text = await readTextStream(res.body, onText);
-  return { handled: true, text };
+  // The server route streams plain text (no structured sources).
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    text += decoder.decode(value, { stream: true });
+    onUpdate({ text, sources: [] });
+  }
+  return { handled: true, update: { text, sources: [] } };
 }
 
-/** Browser-direct call using the visitor's own key (BYO-key demo path). */
 async function streamBrowserDirect(
   prompt: string,
-  onText: OnText
-): Promise<string> {
+  useWebSearch: boolean,
+  onUpdate: OnUpdate
+): Promise<ChatUpdate> {
   const key = getStoredKey();
   if (!key) {
     const err = new Error("Add your Anthropic API key to use AI.");
@@ -77,6 +92,13 @@ async function streamBrowserDirect(
       max_tokens: 1024,
       stream: true,
       messages: [{ role: "user", content: prompt }],
+      ...(useWebSearch
+        ? {
+            tools: [
+              { type: "web_search_20250305", name: "web_search", max_uses: 5 },
+            ],
+          }
+        : {}),
     }),
   });
 
@@ -87,35 +109,12 @@ async function streamBrowserDirect(
     throw new Error(`Anthropic API error: ${res.status}`);
   }
 
-  return readSseTextStream(res.body, onText);
-}
-
-/** Reads a plain-text stream (server route emits text directly). */
-async function readTextStream(
-  body: ReadableStream<Uint8Array>,
-  onText: OnText
-): Promise<string> {
-  const reader = body.getReader();
-  const decoder = new TextDecoder();
-  let text = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    text += decoder.decode(value, { stream: true });
-    onText(text);
-  }
-  return text;
-}
-
-/** Reads Anthropic's SSE stream and accumulates text_delta content. */
-async function readSseTextStream(
-  body: ReadableStream<Uint8Array>,
-  onText: OnText
-): Promise<string> {
-  const reader = body.getReader();
+  const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
   let text = "";
+  const sources: ChatSource[] = [];
+  const seen = new Set<string>();
 
   while (true) {
     const { done, value } = await reader.read();
@@ -130,17 +129,34 @@ async function readSseTextStream(
       if (!data || data === "[DONE]") continue;
       try {
         const event = JSON.parse(data);
+
+        // Web-search results arrive whole in a content_block_start event.
+        if (
+          event.type === "content_block_start" &&
+          event.content_block?.type === "web_search_tool_result" &&
+          Array.isArray(event.content_block.content)
+        ) {
+          for (const r of event.content_block.content) {
+            if (r?.type === "web_search_result" && r.url && !seen.has(r.url)) {
+              seen.add(r.url);
+              sources.push({ title: r.title || r.url, url: r.url });
+            }
+          }
+          onUpdate({ text, sources: [...sources] });
+        }
+
         if (
           event.type === "content_block_delta" &&
           event.delta?.type === "text_delta"
         ) {
           text += event.delta.text;
-          onText(text);
+          onUpdate({ text, sources: [...sources] });
         }
       } catch {
         // ignore keep-alives / non-JSON lines
       }
     }
   }
-  return text;
+
+  return { text, sources };
 }

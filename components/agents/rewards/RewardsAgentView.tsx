@@ -8,8 +8,8 @@ import {
   formatOfferEnds,
 } from "@/lib/data/rewards";
 import ResultCard from "@/components/ui/ResultCard";
-import AIChat, { useAIResponse } from "@/components/ui/AIChat";
 import StatusBar from "@/components/ui/StatusBar";
+import AgentAssistant from "@/components/ui/AgentAssistant";
 
 interface RewardsAgentViewProps {
   type: RewardType;
@@ -67,7 +67,13 @@ export default function RewardsAgentView({
   const [brand, setBrand] = useState("");
   const [featuredOnly, setFeaturedOnly] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const { response, isLoading, ask } = useAIResponse();
+  const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantPrompt, setAssistantPrompt] = useState<string | undefined>();
+
+  const openAssistant = (prompt?: string) => {
+    setAssistantPrompt(prompt);
+    setAssistantOpen(true);
+  };
 
   const offers = useMemo(() => getOffersByType(type), [type]);
 
@@ -151,14 +157,14 @@ export default function RewardsAgentView({
             actionLabel={actionLabel}
             onAction={() => window.open(o.url, "_blank")}
             onDetails={() =>
-              ask(
+              openAssistant(
                 `Explain this ${type.replace("-", " ")} offer and whether it's worth using: "${o.title}" from ${o.brand}. ${o.description}${
                   o.promoCode ? ` Promo code: ${o.promoCode}.` : ""
                 }${o.minSpend ? ` Minimum spend $${o.minSpend}.` : ""} Ends ${formatOfferEnds(o.endsAt)}.`
               )
             }
             onAlternatives={() =>
-              ask(
+              openAssistant(
                 `Find similar ${o.category} ${type.replace("-", " ")} offers${o.city ? ` in ${o.city}` : ""} that are as good or better than ${o.brand}'s "${o.title}".`
               )
             }
@@ -170,20 +176,23 @@ export default function RewardsAgentView({
         <div className="empty-state">No offers match your filters.</div>
       )}
 
-      {response && (
-        <div className="glass-panel p-5">
-          <StatusBar status={isLoading ? "thinking" : "idle"} />
-          <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap mt-2">
-            {response}
-          </p>
-        </div>
-      )}
+      <button
+        onClick={() => openAssistant()}
+        className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 bg-gradient-to-br from-hub-blue to-hub-purple hover:opacity-90 transition-opacity"
+      >
+        <span className="text-base">✨</span>
+        Ask {chat.title}
+      </button>
 
-      <AIChat
-        title={chat.title}
+      <AgentAssistant
+        open={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        agentName={chat.title}
+        icon={icon}
         placeholder={chat.placeholder}
         quickAsks={chat.quickAsks}
         systemContext={chat.systemContext}
+        initialPrompt={assistantPrompt}
       />
     </div>
   );
