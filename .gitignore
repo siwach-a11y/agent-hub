@@ -44,3 +44,4 @@ analytics-dashboard-demo.zip
 .open-next/
 .dev.vars
 .wrangler/
+.data/

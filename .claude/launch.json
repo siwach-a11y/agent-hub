@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "agenthub-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "-p", "3011"],
+      "port": 3011
     },
     {
       "name": "demo-static",

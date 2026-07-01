@@ -11,6 +11,7 @@ import AgentCard from "@/components/marketplace/AgentCard";
 import StatsRow from "@/components/marketplace/StatsRow";
 import CategoryChips from "@/components/marketplace/CategoryChips";
 import MarketplaceChat from "@/components/marketplace/MarketplaceChat";
+import PublishedOffers from "@/components/marketplace/PublishedOffers";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -107,6 +108,8 @@ export default function Home() {
             onChange={setCategory}
           />
         </section>
+
+        {!search && category === "All" && <PublishedOffers />}
 
         {!search && category === "All" && (
           <section>
