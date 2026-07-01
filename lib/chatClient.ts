@@ -1,31 +1,16 @@
-// Chat endpoint resolution:
-// - Normal (server) build: call the local Next.js `/api/chat` route, which
-//   holds ANTHROPIC_API_KEY server-side.
-// - Static GitHub Pages demo (NEXT_PUBLIC_STATIC_DEMO=true): there is no
-//   server, so call a serverless proxy whose URL is baked in via
-//   NEXT_PUBLIC_CHAT_PROXY_URL. The proxy holds the API key as a server-side
-//   secret — no key is ever embedded in this client bundle.
-const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "true";
-const PROXY_URL = process.env.NEXT_PUBLIC_CHAT_PROXY_URL;
-
 /**
- * Streams a chat completion, invoking `onText` with the cumulative text so far.
- * Both endpoints return a plain-text stream of the assistant's message.
- * Returns the final text.
+ * Streams a chat completion from the server `/api/chat` route, invoking
+ * `onText` with the cumulative text so far. Returns the final text.
+ *
+ * The route runs server-side (locally via `next dev`, in production on the
+ * Cloudflare Worker) and holds ANTHROPIC_API_KEY as a server secret.
  */
 export async function streamChatResponse(
   prompt: string,
   useWebSearch: boolean,
   onText: (cumulative: string) => void
 ): Promise<string> {
-  const endpoint = STATIC_DEMO ? PROXY_URL : "/api/chat";
-  if (!endpoint) {
-    throw new Error(
-      "AI is not configured for this static demo (no chat proxy set)."
-    );
-  }
-
-  const res = await fetch(endpoint, {
+  const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt, useWebSearch }),

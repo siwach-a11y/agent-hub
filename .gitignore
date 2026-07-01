@@ -41,3 +41,6 @@ agenthub-demo.zip
 /analytics-dashboard-demo/
 analytics-dashboard-demo.zip
 /analytics-dashboard/out/
+.open-next/
+.dev.vars
+.wrangler/
