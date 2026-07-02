@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+.next
+out
+agenthub-demo
+agenthub-demo.zip
+.open-next
+.wrangler
+.data
+.env*.local
+.dev.vars
+analytics-dashboard
+exports
+scripts/build-*.mjs
+**/*.md

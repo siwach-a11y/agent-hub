@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AgentHub — AI Agent Marketplace",
+  title: "AgentHub — Voucher & Rewards Agents",
   description:
-    "Discover and launch AI-powered agents for travel, entertainment, finance, and more.",
+    "Discover AI agents for vouchers, daily deals, cashback, promo codes, loyalty rewards, buy-one-get-one offers, and flash sales.",
 };
 
 export default function RootLayout({

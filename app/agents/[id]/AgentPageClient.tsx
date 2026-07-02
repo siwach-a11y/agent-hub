@@ -2,25 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { getAgentById } from "@/lib/data/agents";
-import TrendingVideoAgent from "@/components/agents/TrendingVideoAgent";
-import ConcertAgent from "@/components/agents/ConcertAgent";
-import FlightHotelAgent from "@/components/agents/FlightHotelAgent";
-import CurrencyAgent from "@/components/agents/CurrencyAgent";
-import CarRentalAgent from "@/components/agents/CarRentalAgent";
-import EventDealFlashSaleAgent from "@/components/agents/EventDealFlashSaleAgent";
-import EventDealHunterAgent from "@/components/agents/EventDealHunterAgent";
-import PersonalLoanAgent from "@/components/agents/PersonalLoanAgent";
+import VoucherDiscoveryAgent from "@/components/agents/VoucherDiscoveryAgent";
+import DailyDealsAgent from "@/components/agents/DailyDealsAgent";
+import CashbackAgent from "@/components/agents/CashbackAgent";
+import PromoCodeAgent from "@/components/agents/PromoCodeAgent";
+import LoyaltyRewardsAgent from "@/components/agents/LoyaltyRewardsAgent";
+import BuyOneGetOneAgent from "@/components/agents/BuyOneGetOneAgent";
+import FlashSaleAgent from "@/components/agents/FlashSaleAgent";
 import { type ComponentType } from "react";
 
 const agentComponents: Record<string, ComponentType> = {
-  "trending-video-finder": TrendingVideoAgent,
-  "concert-ticket-finder": ConcertAgent,
-  "flight-hotel-finder": FlightHotelAgent,
-  "currency-exchange": CurrencyAgent,
-  "car-rental-finder": CarRentalAgent,
-  "event-deal-flash-sale": EventDealFlashSaleAgent,
-  "event-deal-hunter": EventDealHunterAgent,
-  "personal-loan-finder": PersonalLoanAgent,
+  "voucher-discovery": VoucherDiscoveryAgent,
+  "daily-deals": DailyDealsAgent,
+  "cashback": CashbackAgent,
+  "promo-code": PromoCodeAgent,
+  "loyalty-rewards": LoyaltyRewardsAgent,
+  "buy-one-get-one": BuyOneGetOneAgent,
+  "flash-sale": FlashSaleAgent,
 };
 
 export default function AgentPageClient({ id }: { id: string }) {

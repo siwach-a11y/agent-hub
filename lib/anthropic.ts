@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { MessageCreateParams } from "@anthropic-ai/sdk/resources/messages/messages";
 
-const MODEL = "claude-sonnet-4-5";
+const MODEL = "claude-opus-4-5";
 
 export function getAnthropicClient() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
